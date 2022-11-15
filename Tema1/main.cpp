@@ -99,7 +99,7 @@ int main() {
     int cleanSheetsd1 = d1.getCleanSheets();
     std:: cout << cleanSheetsd1 << std::endl;
 
-    // item 6, urmatoarele linii vor da eroare deoarece copy constructorul si copy assignment operator au fost dezactivate, clasa Defender mostenind clasa Uncopyable
+    // item 6, urmatoarele linii vor da eroare deoarece copy constructorul si copy assignment operator au fost dezactivate
 
     // Defender d2(d1);
     // Defender d3;
