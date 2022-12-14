@@ -7,6 +7,7 @@ class Footballer {
     std::string teamName;
     int nrOfGoals;
     int nrOfAssists;
+    bool suspended; // pentru item 14
 
     public:
     //destructor
@@ -19,7 +20,8 @@ class Footballer {
     : name(),
       teamName(),
       nrOfGoals(0),
-      nrOfAssists(0)
+      nrOfAssists(0),
+      suspended(false)
     { 
         std::cout << "Default constructor of class Footballer " << std::endl; 
     }
@@ -29,7 +31,8 @@ class Footballer {
     : name(name),
       teamName(team),
       nrOfGoals(goals),
-      nrOfAssists(assists)
+      nrOfAssists(assists),
+      suspended(false)
     { 
         std::cout << "Constructor with member initialization list of class Footballer" << std::endl; 
     }  
@@ -67,6 +70,34 @@ class Footballer {
         goalContributions = this->nrOfGoals + this->nrOfAssists;
 
         return goalContributions;
+    }
+
+    void setSuspended (bool value) {
+        this->suspended = value;
+    }
+};
+
+// pentru item 14:
+// am "mimat" actiunile de lock si unlock, pentru a seta statusul de suspendat sau nesuspendat al fotbalistului 
+void lock(Footballer *F) {
+    F->setSuspended(true);
+    std::cout << "Fotbalistul a fost suspendat" << std::endl;
+}
+
+void unlock(Footballer *F) {
+    F->setSuspended(false);
+    std::cout << "Fotbalistul nu e suspendat " << std::endl;
+}
+
+class SuspendFootballer {
+    private:
+    std::shared_ptr<Footballer> footballerptr;
+
+    public:
+    explicit SuspendFootballer(Footballer *F)
+    :footballerptr(F, unlock) // setam unlock ca si deleter
+    {
+        lock(footballerptr.get());
     }
 };
 
@@ -182,4 +213,8 @@ int main() {
 
     sharedptrF = sharedptrF2; // in continuare ambele vor pointa catre obiectul creat, fara ca unul sa devina null
 
+    // item 14
+    Footballer suspendFootballer;
+    SuspendFootballer s1(&suspendFootballer);
+    SuspendFootballer s2(s1); // fotbalistul devine suspendat dupa care expira suspendarea
 }
